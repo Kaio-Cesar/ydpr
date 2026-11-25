@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Recover · You did print it, right?</title>
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#0d0e11" />
+    <script type="module" src="/src/recover.ts"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="./">
+        <span class="brand-mark">YDPR</span>
+        <span class="brand-name">You did print it, right?</span>
+      </a>
+      <nav>
+        <a href="./">Print</a>
+        <a href="./recover.html" aria-current="page">Recover</a>
+      </nav>
+    </header>
+
+    <main class="recover">
+      <div class="recover-col">
+        <div class="intro">
+          <h1>Read a backup back</h1>
+          <p>Scan the QR codes from a printed page, or paste their text. Decryption happens in this tab, offline.</p>
+        </div>
+
+        <section class="card">
+          <h2><b>1</b>Scan or paste</h2>
+          <div class="row">
+            <button type="button" class="primary" id="cam">Use camera</button>
+            <label class="file-btn">Photo of the page<input type="file" id="file" accept="image/*" /></label>
+          </div>
+          <div class="video-wrap" id="video-wrap" hidden>
+            <video id="video" playsinline muted></video>
+          </div>
+          <textarea id="paste" rows="5" spellcheck="false" placeholder="…or paste the scanned text here. For several codes, paste each on its own, one after another."></textarea>
+          <div class="row">
+            <button type="button" id="use-paste">Add text</button>
+            <button type="button" class="ghost" id="reset">Start over</button>
+          </div>
+          <div class="chips" id="chips"></div>
+          <div class="status" id="scan-status" role="status" aria-live="polite"></div>
+        </section>
+
+        <section class="card" id="decrypt-card" hidden>
+          <h2><b>2</b>Passphrase</h2>
+          <p>This backup is encrypted with age. Enter the passphrase it was made with.</p>
+          <div class="pass-wrap">
+            <input id="passphrase" type="password" spellcheck="false" autocomplete="off" />
+            <button type="button" class="primary" id="decrypt">Decrypt</button>
+          </div>
+          <div class="status" id="dec-status" role="status" aria-live="polite"></div>
+        </section>
+
+        <section class="card" id="result-card" hidden>
+          <h2><b>✓</b>Recovered</h2>
+          <pre class="result" id="result"></pre>
+          <div class="row">
+            <button type="button" id="copy">Copy</button>
+            <button type="button" class="ghost" id="wipe">Clear from screen</button>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

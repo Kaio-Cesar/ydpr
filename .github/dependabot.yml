@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: "bun"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # Match bunfig.toml's 7-day minimumReleaseAge for routine bumps.
+    cooldown:
+      default-days: 7
+    groups:
+      security:
+        applies-to: security-updates
+        patterns: ["*"]
+      tooling:
+        patterns: ["vite", "vite-plugin-pwa", "vitest", "typescript", "@types/*"]
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7

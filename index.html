@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <title>You did print it, right?</title>
+    <meta name="description" content="Print recovery codes as QR backup pages, optionally encrypted with age. Works offline." />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#0d0e11" />
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <header class="topbar chrome">
+      <a class="brand" href="./">
+        <span class="brand-mark">YDPR</span>
+        <span class="brand-name">You did print it, right?</span>
+      </a>
+      <nav>
+        <a href="./" aria-current="page">Print</a>
+        <a href="./recover.html">Recover</a>
+      </nav>
+    </header>
+
+    <main class="workspace">
+      <form id="form" class="panel chrome" autocomplete="off" novalidate>
+        <section class="group">
+          <label class="label" for="title">Title</label>
+          <input id="title" name="title" placeholder="GitHub recovery codes" maxlength="80" />
+        </section>
+
+        <section class="group">
+          <div class="label-row">
+            <label class="label" for="secret">Secret</label>
+            <span class="hint" id="secret-count">0 bytes</span>
+          </div>
+          <textarea id="secret" name="secret" rows="8" spellcheck="false"
+            placeholder="Paste recovery codes, a seed phrase, a key…"></textarea>
+        </section>
+
+        <section class="group">
+          <label class="label" for="note">Note <span class="hint">printed, never encrypted</span></label>
+          <input id="note" name="note" placeholder="Passphrase lives in my password manager" maxlength="160" />
+        </section>
+
+        <section class="group two">
+          <fieldset>
+            <legend class="label">Paper</legend>
+            <div class="seg" role="radiogroup">
+              <label><input type="radio" name="paper" value="A4" /><span>A4</span></label>
+              <label><input type="radio" name="paper" value="A5" checked /><span>A5</span></label>
+              <label><input type="radio" name="paper" value="A6" /><span>A6</span></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend class="label">Error correction</legend>
+            <div class="seg" role="radiogroup">
+              <label title="Recovers 7% damage"><input type="radio" name="ec" value="L" /><span>L</span></label>
+              <label title="Recovers 15% damage"><input type="radio" name="ec" value="M" checked /><span>M</span></label>
+              <label title="Recovers 25% damage"><input type="radio" name="ec" value="Q" /><span>Q</span></label>
+              <label title="Recovers 30% damage"><input type="radio" name="ec" value="H" /><span>H</span></label>
+            </div>
+          </fieldset>
+        </section>
+
+        <section class="group">
+          <label class="check"><input type="checkbox" id="include-text" checked /> Print a text copy under the QR</label>
+          <fieldset id="columns-field" class="sub">
+            <legend class="label">Columns <span class="hint">one code per line, numbered</span></legend>
+            <div class="seg" role="radiogroup">
+              <label title="Fit as many as the longest line allows"><input type="radio" name="columns" value="auto" checked /><span>Auto</span></label>
+              <label title="Keep the text as typed"><input type="radio" name="columns" value="off" /><span>Off</span></label>
+              <label><input type="radio" name="columns" value="1" /><span>1</span></label>
+              <label><input type="radio" name="columns" value="2" /><span>2</span></label>
+              <label><input type="radio" name="columns" value="3" /><span>3</span></label>
+              <label><input type="radio" name="columns" value="4" /><span>4</span></label>
+            </div>
+          </fieldset>
+        </section>
+
+        <section class="group encrypt">
+          <label class="check"><input type="checkbox" id="encrypt" /> Encrypt with a passphrase <span class="hint">age · scrypt · ChaCha20-Poly1305</span></label>
+          <div id="pass-fields" class="pass-fields" hidden>
+            <div class="label-row">
+              <label class="label" for="pass">Passphrase</label>
+              <button type="button" class="link" id="gen">Generate</button>
+            </div>
+            <div class="pass-wrap">
+              <input id="pass" type="password" spellcheck="false" autocomplete="new-password" />
+              <button type="button" class="ghost" id="show-pass" aria-pressed="false">Show</button>
+            </div>
+            <div class="meter"><span id="meter-bar"></span></div>
+            <p class="hint" id="meter-text">Use 4+ random words or 12+ random characters.</p>
+            <label class="label" for="pass2">Confirm</label>
+            <input id="pass2" type="password" spellcheck="false" autocomplete="new-password" />
+          </div>
+        </section>
+
+        <div class="status" id="status" role="status" aria-live="polite"></div>
+
+        <div class="actions">
+          <button type="button" class="primary" id="print" disabled>Print</button>
+          <button type="button" class="ghost" id="clear">Clear</button>
+        </div>
+        <p class="hint privacy">Everything happens in this tab. Nothing is stored or sent anywhere.</p>
+      </form>
+
+      <section class="preview" aria-label="Print preview">
+        <div class="preview-bar chrome">
+          <span class="label">Preview</span>
+          <span class="hint" id="overflow"></span>
+        </div>
+        <div class="desk" id="desk">
+          <div class="scaler" id="scaler"></div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

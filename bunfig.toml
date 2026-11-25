@@ -1,0 +1,8 @@
+[install]
+# Pin exact versions (no ^ ranges) for reproducible, auditable installs.
+exact = true
+# Only install versions published at least 7 days ago (supply-chain cooldown).
+minimumReleaseAge = 604800
+# Security fixes newer than the cooldown go here, one per line, with the advisory ID:
+# minimumReleaseAgeExcludes = ["pkg-name"] # GHSA-xxxx-xxxx-xxxx
+minimumReleaseAgeExcludes = []

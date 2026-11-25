@@ -1,0 +1,185 @@
+/* The printable sheet. Sized in real millimetres; the preview scales it down. */
+
+.sheet {
+  --ink: #000;
+  --rule: #000;
+  --soft: #555;
+  --u: 1;
+  --qr: 78mm;
+  --m: 16mm;
+  --ph: 297mm;
+  width: 210mm;
+  min-height: 297mm;
+  padding: var(--m);
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: calc(9.5pt * var(--u));
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  gap: calc(6mm * var(--u));
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.25), 0 12px 40px rgb(0 0 0 / 0.35);
+  /* faint line where each printed page's content area ends (pages repeat every ph - 2m) */
+  --pc: calc(var(--ph) - 2 * var(--m));
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 calc(var(--pc) - 1px),
+    rgb(220 40 40 / 0.35) calc(var(--pc) - 1px) var(--pc)
+  );
+  background-position: 0 var(--m);
+  background-repeat: repeat-y;
+}
+.sheet.paper-a5 { width: 148mm; min-height: 210mm; --ph: 210mm; --m: 12mm; --u: 0.88; --qr: 64mm; }
+.sheet.paper-a6 { width: 105mm; min-height: 148mm; --ph: 148mm; --m: 8mm; --u: 0.72; --qr: 52mm; }
+
+.sheet h1, .sheet h2, .sheet p, .sheet ol, .sheet dl, .sheet figure, .sheet pre { margin: 0; }
+
+.sheet h2 {
+  font-family: var(--mono);
+  font-weight: normal;
+  font-size: calc(7.5pt * var(--u));
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: calc(2mm * var(--u));
+}
+
+.s-head { border-bottom: 1.5pt solid var(--rule); padding-bottom: calc(4mm * var(--u)); }
+.s-kicker {
+  font-family: var(--mono);
+  font-size: calc(7.5pt * var(--u));
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: calc(2.5mm * var(--u));
+}
+.s-kicker::before { content: "■ "; }
+.s-title {
+  font-family: var(--mono);
+  font-weight: normal;
+  font-size: calc(20pt * var(--u));
+  line-height: 1.1;
+  word-break: break-word;
+  margin-bottom: calc(3mm * var(--u)) !important;
+}
+.s-meta {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  column-gap: calc(5mm * var(--u));
+  row-gap: 0.5mm;
+  justify-content: start;
+  font-size: calc(7.5pt * var(--u));
+}
+.s-meta dt {
+  grid-row: 1;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--soft);
+  font-size: calc(6.5pt * var(--u));
+}
+.s-meta dd { grid-row: 2; margin: 0; font-family: var(--mono); }
+.paper-a6 .s-meta { grid-template-columns: repeat(2, auto); }
+.paper-a6 .s-meta dt:nth-of-type(n + 3) { grid-row: 3; }
+.paper-a6 .s-meta dd:nth-of-type(n + 3) { grid-row: 4; }
+
+.s-body { display: flex; flex-wrap: wrap; gap: calc(6mm * var(--u)); align-items: flex-start; }
+
+.s-qrs { display: flex; flex-wrap: wrap; gap: calc(4mm * var(--u)); flex: none; }
+.s-qrs.multi { flex: 1 1 100%; }
+.s-qr { width: var(--qr); break-inside: avoid; }
+.s-qrs.multi .s-qr { width: calc(var(--qr) * 0.86); }
+.s-qr svg { display: block; width: 100%; height: auto; outline: 0.5pt solid var(--rule); }
+.s-qr figcaption {
+  font-family: var(--mono);
+  font-size: calc(7.5pt * var(--u));
+  text-align: center;
+  margin-top: 1mm;
+}
+
+.s-howto { flex: 1 1 70mm; min-width: 0; break-inside: avoid; }
+.s-howto ol { padding-left: 1.3em; display: flex; flex-direction: column; gap: 1.6mm; }
+.s-howto li::marker { font-family: var(--mono); }
+.s-howto code { font-family: var(--mono); font-size: 0.95em; background: #eee; padding: 0 0.25em; word-break: break-all; }
+.s-howto strong { font-weight: 600; }
+
+.s-note { border-left: 1.5pt solid var(--rule); padding-left: 3mm; break-inside: avoid; }
+
+.s-text pre {
+  font-family: var(--mono);
+  font-size: calc(7pt * var(--u));
+  line-height: 1.35;
+  white-space: pre-wrap;
+  word-break: break-all;
+  border: 0.5pt solid var(--rule);
+  padding: calc(3mm * var(--u));
+}
+
+.s-foot {
+  margin-top: auto;
+  border-top: 0.5pt solid var(--rule);
+  padding-top: 2mm;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1mm 4mm;
+  font-family: var(--mono);
+  font-size: calc(6.5pt * var(--u));
+  color: var(--soft);
+}
+
+/* nothing typed yet: show the layout as a ghost */
+.sheet.is-empty .s-body::before {
+  content: "Your QR code appears here";
+  display: grid;
+  place-items: center;
+  width: var(--qr);
+  aspect-ratio: 1;
+  border: 1px dashed #bbb;
+  color: #999;
+  font-family: var(--mono);
+  font-size: calc(8pt * var(--u));
+  text-align: center;
+}
+
+@media print {
+  html, body { height: auto; background: #fff; display: block; }
+  .chrome { display: none !important; }
+  .workspace, .preview, .desk { display: block; padding: 0; margin: 0; overflow: visible; background: none; }
+  .scaler { transform: none !important; width: auto !important; height: auto !important; margin: 0 !important; }
+  .sheet {
+    transform: none !important;
+    width: auto;
+    min-height: 0;
+    padding: 0;
+    box-shadow: none;
+    background-image: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* Plain codes as a numbered list in columns. Mark each code as used by ticking the box. */
+.s-codes {
+  list-style: none;
+  padding: calc(3mm * var(--u));
+  border: 0.5pt solid var(--rule);
+  font-family: var(--mono);
+  font-size: calc(9pt * var(--u));
+  line-height: 1.7;
+  column-gap: calc(6mm * var(--u));
+  column-rule: 0.5pt solid #ccc;
+}
+.s-codes.auto { column-width: var(--colw); }
+.s-codes.fixed { column-count: var(--cols); }
+.s-codes li { break-inside: avoid; display: flex; gap: 1.2ch; align-items: baseline; white-space: nowrap; }
+.s-codes .n { color: var(--soft); font-size: 0.8em; }
+.s-codes .n::before {
+  content: "";
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  border: 0.5pt solid var(--ink);
+  margin-right: 0.8ch;
+  vertical-align: -0.05em;
+}
+.s-codes .c { overflow-wrap: anywhere; white-space: normal; }
