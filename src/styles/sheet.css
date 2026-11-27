@@ -141,6 +141,33 @@
   text-align: center;
 }
 
+
+/* Preview stack: one or more cards, or imposed sheets, one under the other. */
+.stack { display: flex; flex-direction: column; align-items: flex-start; gap: 10mm; width: max-content; }
+
+/* Several cards cut from one sheet. The sheet prints edge to edge; each card keeps its own margin. */
+.nup {
+  width: var(--sw);
+  height: var(--sh);
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--cw));
+  grid-template-rows: repeat(var(--rows), var(--ch));
+  place-content: center;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.25), 0 12px 40px rgb(0 0 0 / 0.35);
+  overflow: hidden;
+}
+.slot { position: relative; outline: 0.3mm dashed #9a9a9a; outline-offset: -0.15mm; }
+.sheet.in-slot {
+  width: var(--cw);
+  height: var(--ch);
+  min-height: 0;
+  overflow: hidden;
+  box-shadow: none;
+  background-image: none;
+}
+.sheet.in-slot.overflowing { box-shadow: inset 0 -3mm 0 rgb(220 40 40 / 0.45); }
+
 @media print {
   html, body { height: auto; background: #fff; display: block; }
   .chrome { display: none !important; }
@@ -156,6 +183,12 @@
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+  .stack { display: block; gap: 0; transform: none !important; }
+  .stack > .sheet + .sheet { break-before: page; }
+  /* A hair under the page height, so rounding never spills a blank page. */
+  .nup { height: calc(var(--sh) - 0.5mm); box-shadow: none; break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .nup + .nup { break-before: page; }
+  .sheet.in-slot { width: var(--cw); height: var(--ch); padding: var(--m); }
 }
 
 /* Plain codes as a numbered list in columns. Mark each code as used by ticking the box. */

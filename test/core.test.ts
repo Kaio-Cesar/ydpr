@@ -50,3 +50,15 @@ describe("QR end to end", () => {
     }
   }, 30000);
 });
+
+describe("imposition", () => {
+  it("tiles cards onto bigger sheets", async () => {
+    const { impose } = await import("../src/page");
+    expect(impose("A5", "A4")).toMatchObject({ cols: 2, rows: 1, w: 297, h: 210 });
+    expect(impose("A6", "A4")).toMatchObject({ cols: 2, rows: 2, w: 210, h: 297 });
+    expect(impose("A6", "A5")).toMatchObject({ cols: 2, rows: 1, w: 210, h: 148 });
+    expect(impose("A4", "A4")).toBeNull();
+    expect(impose("A4", "A5")).toBeNull();
+    expect(impose("A5", "same")).toBeNull();
+  });
+});

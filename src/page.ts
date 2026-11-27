@@ -170,3 +170,55 @@ function codeList(text: string, columns: Exclude<Columns, "off">): HTMLElement {
   ol.classList.add(columns === "auto" ? "auto" : "fixed");
   return ol;
 }
+
+/** What the cards are printed on: each on its own page, or several cut from one bigger sheet. */
+export type PrintOn = "same" | "A5" | "A4";
+
+export interface Imposition {
+  /** Physical sheet, in mm, already oriented. */
+  w: number;
+  h: number;
+  cols: number;
+  rows: number;
+}
+
+/** How many cards of size `card` tile a `sheet`, trying both orientations. Null if fewer than 2 fit. */
+export function impose(card: Paper, sheet: PrintOn): Imposition | null {
+  if (sheet === "same") return null;
+  const c = PAPER[card];
+  const s = PAPER[sheet];
+  let best: Imposition | null = null;
+  for (const [w, h] of [[s.w, s.h], [s.h, s.w]]) {
+    // Small epsilon: A4 is 2 × A5 exactly, give or take a rounding millimetre.
+    const cols = Math.floor((w + 0.5) / c.w);
+    const rows = Math.floor((h + 0.5) / c.h);
+    if (cols * rows >= 2 && (!best || cols * rows > best.cols * best.rows)) best = { w, h, cols, rows };
+  }
+  return best;
+}
+
+/**
+ * Arrange card sheets for printing. Without imposition, each card is its own page(s).
+ * With it, cards are placed in a grid on each physical sheet with dashed cut lines.
+ */
+export function layout(cards: HTMLElement[], card: Paper, imp: Imposition | null): HTMLElement {
+  if (!imp) return h("div", { class: "stack" }, ...cards);
+  const per = imp.cols * imp.rows;
+  const pages: HTMLElement[] = [];
+  for (let i = 0; i < cards.length; i += per) {
+    const slots = cards.slice(i, i + per).map((c) => {
+      c.classList.add("in-slot");
+      return h("div", { class: "slot" }, c);
+    });
+    while (slots.length < per) slots.push(h("div", { class: "slot empty" }));
+    const page = h("div", { class: "nup" }, ...slots);
+    page.style.setProperty("--sw", `${imp.w}mm`);
+    page.style.setProperty("--sh", `${imp.h}mm`);
+    page.style.setProperty("--cw", `${PAPER[card].w}mm`);
+    page.style.setProperty("--ch", `${PAPER[card].h}mm`);
+    page.style.setProperty("--cols", String(imp.cols));
+    page.style.setProperty("--rows", String(imp.rows));
+    pages.push(page);
+  }
+  return h("div", { class: "stack imposed" }, ...pages);
+}

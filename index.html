@@ -26,6 +26,14 @@
     <main class="workspace">
       <form id="form" class="panel chrome" autocomplete="off" novalidate>
         <section class="group">
+          <div class="label-row">
+            <span class="label" id="cards-label">Cards</span>
+            <button type="button" class="link" id="remove-card" hidden>Remove card</button>
+          </div>
+          <div class="tabs" id="tabs" role="tablist" aria-labelledby="cards-label"></div>
+        </section>
+
+        <section class="group">
           <label class="label" for="title">Title</label>
           <input id="title" name="title" placeholder="GitHub recovery codes" maxlength="80" />
         </section>
@@ -53,6 +61,19 @@
               <label><input type="radio" name="paper" value="A6" /><span>A6</span></label>
             </div>
           </fieldset>
+          <fieldset>
+            <legend class="label">Print on</legend>
+            <div class="seg" role="radiogroup">
+              <label title="Paper the size of the card, one card per page"><input type="radio" name="printon" value="same" checked /><span>Same</span></label>
+              <label><input type="radio" name="printon" value="A5" /><span>A5</span></label>
+              <label><input type="radio" name="printon" value="A4" /><span>A4</span></label>
+            </div>
+          </fieldset>
+          <p class="hint" id="printon-hint" hidden></p>
+          <label class="check" id="fill-field" hidden><input type="checkbox" id="fill" /> Fill empty spots with copies</label>
+        </section>
+
+        <section class="group">
           <fieldset>
             <legend class="label">Error correction</legend>
             <div class="seg" role="radiogroup">
